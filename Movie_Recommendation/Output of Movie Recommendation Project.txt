@@ -1,0 +1,464 @@
+
+R version 3.6.0 (2019-04-26) -- "Planting of a Tree"
+Copyright (C) 2019 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> getwd()
+[1] "C:/Users/Koustubh/Documents"
+> setwd("C:/Users/Koustubh/Desktop/AMITY/Projects")
+> getwd()
+[1] "C:/Users/Koustubh/Desktop/AMITY/Projects"
+> library(recommenderlab)
+Error in library(recommenderlab) : 
+  there is no package called ‘recommenderlab’
+> install.packages("recommenderlab")
+Installing package into ‘C:/Users/Koustubh/Documents/R/win-library/3.6’
+(as ‘lib’ is unspecified)
+also installing the dependencies ‘RcppProgress’, ‘arules’, ‘proxy’, ‘registry’, ‘irlba’, ‘recosystem’
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/3.6/RcppProgress_0.4.2.zip'
+Content type 'application/zip' length 33936 bytes (33 KB)
+downloaded 33 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/3.6/arules_1.6-4.zip'
+Content type 'application/zip' length 2684757 bytes (2.6 MB)
+downloaded 2.6 MB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/3.6/proxy_0.4-23.zip'
+Content type 'application/zip' length 251585 bytes (245 KB)
+downloaded 245 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/3.6/registry_0.5-1.zip'
+Content type 'application/zip' length 197133 bytes (192 KB)
+downloaded 192 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/3.6/irlba_2.3.3.zip'
+Content type 'application/zip' length 315272 bytes (307 KB)
+downloaded 307 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/3.6/recosystem_0.4.2.zip'
+Content type 'application/zip' length 978993 bytes (956 KB)
+downloaded 956 KB
+
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/3.6/recommenderlab_0.2-5.zip'
+Content type 'application/zip' length 2210857 bytes (2.1 MB)
+downloaded 2.1 MB
+
+package ‘RcppProgress’ successfully unpacked and MD5 sums checked
+package ‘arules’ successfully unpacked and MD5 sums checked
+package ‘proxy’ successfully unpacked and MD5 sums checked
+package ‘registry’ successfully unpacked and MD5 sums checked
+package ‘irlba’ successfully unpacked and MD5 sums checked
+package ‘recosystem’ successfully unpacked and MD5 sums checked
+package ‘recommenderlab’ successfully unpacked and MD5 sums checked
+
+The downloaded binary packages are in
+	C:\Users\Koustubh\AppData\Local\Temp\RtmpwpUhUk\downloaded_packages
+> library(recommenderlab)
+Loading required package: Matrix
+Loading required package: arules
+
+Attaching package: ‘arules’
+
+The following objects are masked from ‘package:base’:
+
+    abbreviate, write
+
+Loading required package: proxy
+
+Attaching package: ‘proxy’
+
+The following object is masked from ‘package:Matrix’:
+
+    as.matrix
+
+The following objects are masked from ‘package:stats’:
+
+    as.dist, dist
+
+The following object is masked from ‘package:base’:
+
+    as.matrix
+
+Loading required package: registry
+Registered S3 methods overwritten by 'registry':
+  method               from 
+  print.registry_field proxy
+  print.registry_entry proxy
+Warning messages:
+1: package ‘recommenderlab’ was built under R version 3.6.3 
+2: package ‘arules’ was built under R version 3.6.3 
+3: package ‘proxy’ was built under R version 3.6.3 
+> library(ggplot2)
+Registered S3 methods overwritten by 'ggplot2':
+  method         from 
+  [.quosures     rlang
+  c.quosures     rlang
+  print.quosures rlang
+> library(data.table)
+data.table 1.12.2 using 2 threads (see ?getDTthreads).  Latest news: r-datatable.com
+> library(reshape2)
+
+Attaching package: ‘reshape2’
+
+The following objects are masked from ‘package:data.table’:
+
+    dcast, melt
+
+> movie_data <- read.csv("movies.csv",stringsAsFactors=FALSE)
+Error in file(file, "rt") : cannot open the connection
+In addition: Warning message:
+In file(file, "rt") :
+  cannot open file 'movies.csv': No such file or directory
+> movie_data <- read.csv("movies.csv",stringsAsFactors=FALSE)
+Error in file(file, "rt") : cannot open the connection
+In addition: Warning message:
+In file(file, "rt") :
+  cannot open file 'movies.csv': No such file or directory
+> setwd("C:/Users/Koustubh/Desktop/AMITY/Projects/IMDB-Dataset")
+> getwd()
+[1] "C:/Users/Koustubh/Desktop/AMITY/Projects/IMDB-Dataset"
+> movie_data <- read.csv("movies.csv",stringsAsFactors=FALSE)
+> rating_data <- read.csv("ratings.csv")
+> str(movie_data)
+'data.frame':	10329 obs. of  3 variables:
+ $ movieId: int  1 2 3 4 5 6 7 8 9 10 ...
+ $ title  : chr  "Toy Story (1995)" "Jumanji (1995)" "Grumpier Old Men (1995)" "Waiting to Exhale (1995)" ...
+ $ genres : chr  "Adventure|Animation|Children|Comedy|Fantasy" "Adventure|Children|Fantasy" "Comedy|Romance" "Comedy|Drama|Romance" ...
+> summary(movie_data)
+    movieId          title              genres         
+ Min.   :     1   Length:10329       Length:10329      
+ 1st Qu.:  3240   Class :character   Class :character  
+ Median :  7088   Mode  :character   Mode  :character  
+ Mean   : 31924                                        
+ 3rd Qu.: 59900                                        
+ Max.   :149532                                        
+> head(movie_data)
+  movieId                              title                                      genres
+1       1                   Toy Story (1995) Adventure|Animation|Children|Comedy|Fantasy
+2       2                     Jumanji (1995)                  Adventure|Children|Fantasy
+3       3            Grumpier Old Men (1995)                              Comedy|Romance
+4       4           Waiting to Exhale (1995)                        Comedy|Drama|Romance
+5       5 Father of the Bride Part II (1995)                                      Comedy
+6       6                        Heat (1995)                       Action|Crime|Thriller
+> movie_genre <- as.data.frame(movie_data$genres, stringsAsFactors=FALSE)
+> library(data.table)
+> movie_genre2 <- as.data.frame(tstrsplit(movie_genre[,1], '[|]', 
++                                         type.convert=TRUE), 
++                               stringsAsFactors=FALSE)
+> colnames(movie_genre2) <- c(1:10)
+> list_genre <- c("Action", "Adventure", "Animation", "Children", 
++                 "Comedy", "Crime","Documentary", "Drama", "Fantasy",
++                 "Film-Noir", "Horror", "Musical", "Mystery","Romance",
++                 "Sci-Fi", "Thriller", "War", "Western")
+> genre_mat1 <- matrix(0,10330,18)
+> genre_mat1[1,] <- list_genre
+> colnames(genre_mat1) <- list_genre
+> for (index in 1:nrow(movie_genre2)) {
++   for (col in 1:ncol(movie_genre2)) {
++     gen_col = which(genre_mat1[1,] == movie_genre2[index,col]) 
++     genre_mat1[index+1,gen_col] <- 1
++   }
++ }
+> genre_mat2 <- as.data.frame(genre_mat1[-1,], stringsAsFactors=FALSE) #remove first row, which was the genre list
+> for (col in 1:ncol(genre_mat2)) {
++   genre_mat2[,col] <- as.integer(genre_mat2[,col]) #convert from characters to integers
++ }
+> str(genre_mat2)
+'data.frame':	10329 obs. of  18 variables:
+ $ Action     : int  0 0 0 0 0 1 0 0 1 1 ...
+ $ Adventure  : int  1 1 0 0 0 0 0 1 0 1 ...
+ $ Animation  : int  1 0 0 0 0 0 0 0 0 0 ...
+ $ Children   : int  1 1 0 0 0 0 0 1 0 0 ...
+ $ Comedy     : int  1 0 1 1 1 0 1 0 0 0 ...
+ $ Crime      : int  0 0 0 0 0 1 0 0 0 0 ...
+ $ Documentary: int  0 0 0 0 0 0 0 0 0 0 ...
+ $ Drama      : int  0 0 0 1 0 0 0 0 0 0 ...
+ $ Fantasy    : int  1 1 0 0 0 0 0 0 0 0 ...
+ $ Film-Noir  : int  0 0 0 0 0 0 0 0 0 0 ...
+ $ Horror     : int  0 0 0 0 0 0 0 0 0 0 ...
+ $ Musical    : int  0 0 0 0 0 0 0 0 0 0 ...
+ $ Mystery    : int  0 0 0 0 0 0 0 0 0 0 ...
+ $ Romance    : int  0 0 1 1 0 0 1 0 0 0 ...
+ $ Sci-Fi     : int  0 0 0 0 0 0 0 0 0 0 ...
+ $ Thriller   : int  0 0 0 0 0 1 0 0 0 1 ...
+ $ War        : int  0 0 0 0 0 0 0 0 0 0 ...
+ $ Western    : int  0 0 0 0 0 0 0 0 0 0 ...
+> SearchMatrix <- cbind(movie_data[,1:2], genre_mat2[])
+> head(SearchMatrix)
+  movieId                              title Action Adventure Animation Children Comedy Crime
+1       1                   Toy Story (1995)      0         1         1        1      1     0
+2       2                     Jumanji (1995)      0         1         0        1      0     0
+3       3            Grumpier Old Men (1995)      0         0         0        0      1     0
+4       4           Waiting to Exhale (1995)      0         0         0        0      1     0
+5       5 Father of the Bride Part II (1995)      0         0         0        0      1     0
+6       6                        Heat (1995)      1         0         0        0      0     1
+  Documentary Drama Fantasy Film-Noir Horror Musical Mystery Romance Sci-Fi Thriller War Western
+1           0     0       1         0      0       0       0       0      0        0   0       0
+2           0     0       1         0      0       0       0       0      0        0   0       0
+3           0     0       0         0      0       0       0       1      0        0   0       0
+4           0     1       0         0      0       0       0       1      0        0   0       0
+5           0     0       0         0      0       0       0       0      0        0   0       0
+6           0     0       0         0      0       0       0       0      0        1   0       0
+> ratingMatrix <- dcast(rating_data, userId~movieId, value.var = "rating", na.rm=FALSE)
+> ratingMatrix <- as.matrix(ratingMatrix[,-1]) #remove userIds
+> #Convert rating matrix into a recommenderlab sparse matrix
+> ratingMatrix <- as(ratingMatrix, "realRatingMatrix")
+> ratingMatrix
+668 x 10325 rating matrix of class ‘realRatingMatrix’ with 105339 ratings.
+> recommendation_model <- recommenderRegistry$get_entries(dataType = "realRatingMatrix")
+> names(recommendation_model)
+ [1] "ALS_realRatingMatrix"          "ALS_implicit_realRatingMatrix"
+ [3] "IBCF_realRatingMatrix"         "LIBMF_realRatingMatrix"       
+ [5] "POPULAR_realRatingMatrix"      "RANDOM_realRatingMatrix"      
+ [7] "RERECOMMEND_realRatingMatrix"  "SVD_realRatingMatrix"         
+ [9] "SVDF_realRatingMatrix"         "UBCF_realRatingMatrix"        
+> lapply(recommendation_model, "[[", "description")
+$ALS_realRatingMatrix
+[1] "Recommender for explicit ratings based on latent factors, calculated by alternating least squares algorithm."
+
+$ALS_implicit_realRatingMatrix
+[1] "Recommender for implicit data based on latent factors, calculated by alternating least squares algorithm."
+
+$IBCF_realRatingMatrix
+[1] "Recommender based on item-based collaborative filtering."
+
+$LIBMF_realRatingMatrix
+[1] "Matrix factorization with LIBMF via package recosystem (https://cran.r-project.org/web/packages/recosystem/vignettes/introduction.html)."
+
+$POPULAR_realRatingMatrix
+[1] "Recommender based on item popularity."
+
+$RANDOM_realRatingMatrix
+[1] "Produce random recommendations (real ratings)."
+
+$RERECOMMEND_realRatingMatrix
+[1] "Re-recommends highly rated items (real ratings)."
+
+$SVD_realRatingMatrix
+[1] "Recommender based on SVD approximation with column-mean imputation."
+
+$SVDF_realRatingMatrix
+[1] "Recommender based on Funk SVD with gradient descend (https://sifter.org/~simon/journal/20061211.html)."
+
+$UBCF_realRatingMatrix
+[1] "Recommender based on user-based collaborative filtering."
+
+> recommendation_model$IBCF_realRatingMatrix$parameters
+$k
+[1] 30
+
+$method
+[1] "Cosine"
+
+$normalize
+[1] "center"
+
+$normalize_sim_matrix
+[1] FALSE
+
+$alpha
+[1] 0.5
+
+$na_as_zero
+[1] FALSE
+
+> similarity_mat <- similarity(ratingMatrix[1:4, ],
++                              method = "cosine",
++                              which = "users")
+> as.matrix(similarity_mat)
+          1         2         3         4
+1 0.0000000 0.9760860 0.9641723 0.9914398
+2 0.9760860 0.0000000 0.9925732 0.9374253
+3 0.9641723 0.9925732 0.0000000 0.9888968
+4 0.9914398 0.9374253 0.9888968 0.0000000
+> image(as.matrix(similarity_mat), main = "User's Similarities")
+> movie_similarity <- similarity(ratingMatrix[, 1:4], method =
++                                  "cosine", which = "items")
+> as.matrix(movie_similarity)
+          1         2         3         4
+1 0.0000000 0.9669732 0.9559341 0.9101276
+2 0.9669732 0.0000000 0.9658757 0.9412416
+3 0.9559341 0.9658757 0.0000000 0.9864877
+4 0.9101276 0.9412416 0.9864877 0.0000000
+> image(as.matrix(movie_similarity), main = "Movies similarity")
+> rating_values <- as.vector(ratingMatrix@data)
+> unique(rating_values) # extracting unique ratings
+ [1] 0.0 5.0 4.0 3.0 4.5 1.5 2.0 3.5 1.0 2.5 0.5
+> Table_of_Ratings <- table(rating_values) # creating a count of movie ratings
+> Table_of_Ratings
+rating_values
+      0     0.5       1     1.5       2     2.5       3     3.5       4     4.5 
+6791761    1198    3258    1567    7943    5484   21729   12237   28880    8187 
+      5 
+  14856 
+> movie_views <- colCounts(ratingMatrix) # count views for each movie
+> table_views <- data.frame(movie = names(movie_views),
++                           views = movie_views) # create dataframe of views
+> table_views <- table_views[order(table_views$views,
++                                  decreasing = TRUE), ] # sort by number of views
+> table_views$title <- NA
+> for (index in 1:10325){
++   table_views[index,3] <- as.character(subset(movie_data,
++                                               movie_data$movieId == table_views[index,1])$title)
++ }
+> table_views[1:6,]
+    movie views                                     title
+296   296   325                       Pulp Fiction (1994)
+356   356   311                       Forrest Gump (1994)
+318   318   308          Shawshank Redemption, The (1994)
+480   480   294                      Jurassic Park (1993)
+593   593   290          Silence of the Lambs, The (1991)
+260   260   273 Star Wars: Episode IV - A New Hope (1977)
+> ggplot(table_views[1:6, ], aes(x = title, y = views)) +
++   geom_bar(stat="identity", fill = 'steelblue') +
++   geom_text(aes(label=views), vjust=-0.3, size=3.5) +
++   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
++   ggtitle("Total Views of the Top Films")
+> image(ratingMatrix[1:20, 1:25], axes = FALSE, main = "Heatmap of the first 25 rows and 25 columns")
+> movie_ratings <- ratingMatrix[rowCounts(ratingMatrix) > 50,
++                               colCounts(ratingMatrix) > 50]
+
+
+> movie_ratings
+420 x 447 rating matrix of class ‘realRatingMatrix’ with 38341 ratings.
+> minimum_movies<- quantile(rowCounts(movie_ratings), 0.98)
+> minimum_users <- quantile(colCounts(movie_ratings), 0.98)
+> image(movie_ratings[rowCounts(movie_ratings) > minimum_movies,
++                     colCounts(movie_ratings) > minimum_users],
++       main = "Heatmap of the top users and movies")
+> average_ratings <- rowMeans(movie_ratings)
+> qplot(average_ratings, fill=I("steelblue"), col=I("red")) +
++   ggtitle("Distribution of the average rating per user")
+`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+> normalized_ratings <- normalize(movie_ratings)
+> sum(rowMeans(normalized_ratings) > 0.00001)
+[1] 0
+> image(normalized_ratings[rowCounts(normalized_ratings) > minimum_movies,
++                          colCounts(normalized_ratings) > minimum_users],
++       main = "Normalized Ratings of the Top Users")
+> binary_minimum_movies <- quantile(rowCounts(movie_ratings), 0.95)
+> binary_minimum_users <- quantile(colCounts(movie_ratings), 0.95)
+> #movies_watched <- binarize(movie_ratings, minRating = 1)
+> good_rated_films <- binarize(movie_ratings, minRating = 3)
+> image(good_rated_films[rowCounts(movie_ratings) > binary_minimum_movies,
++                        colCounts(movie_ratings) > binary_minimum_users],
++       main = "Heatmap of the top users and movies")
+> sampled_data<- sample(x = c(TRUE, FALSE),
++                       size = nrow(movie_ratings),
++                       replace = TRUE,
++                       prob = c(0.8, 0.2))
+> training_data <- movie_ratings[sampled_data, ]
+> testing_data <- movie_ratings[!sampled_data, ]
+> #Constructing Recommendation System
+> recommendation_system <- recommenderRegistry$get_entries(dataType ="realRatingMatrix")
+> recommendation_system$IBCF_realRatingMatrix$parameters
+$k
+[1] 30
+
+$method
+[1] "Cosine"
+
+$normalize
+[1] "center"
+
+$normalize_sim_matrix
+[1] FALSE
+
+$alpha
+[1] 0.5
+
+$na_as_zero
+[1] FALSE
+
+> recommen_model <- Recommender(data = training_data,
++                               method = "IBCF",
++                               parameter = list(k = 30))
+> recommen_model
+Recommender of type ‘IBCF’ for ‘realRatingMatrix’ 
+learned using 348 users.
+> class(recommen_model)
+[1] "Recommender"
+attr(,"package")
+[1] "recommenderlab"
+> model_info <- getModel(recommen_model)
+> class(model_info$sim)
+[1] "dgCMatrix"
+attr(,"package")
+[1] "Matrix"
+> dim(model_info$sim)
+[1] 447 447
+> top_items <- 20
+> image(model_info$sim[1:top_items, 1:top_items],
++       main = "Heatmap of the first rows and columns")
+> #Creating Similarity
+> sum_rows <- rowSums(model_info$sim > 0)
+> table(sum_rows)
+sum_rows
+ 30 
+447 
+> sum_cols <- colSums(model_info$sim > 0)
+> qplot(sum_cols, fill=I("steelblue"), col=I("red"))+ ggtitle("Distribution of the column count")
+`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+> top_recommendations <- 10 # the number of items to recommend to each user
+> predicted_recommendations <- predict(object = recommen_model,
++                                      newdata = testing_data,
++                                      n = top_recommendations)
+> predicted_recommendations
+Recommendations as ‘topNList’ with n = 10 for 72 users. 
+> user1 <- predicted_recommendations@items[[1]] # recommendation for the first user
+> movies_user1 <- predicted_recommendations@itemLabels[user1]
+> movies_user2 <- movies_user1
+> for (index in 1:10){
++   movies_user2[index] <- as.character(subset(movie_data,
++                                              movie_data$movieId == movies_user1[index])$title)
++ }
+> movies_user2
+ [1] "Jumanji (1995)"                "Leaving Las Vegas (1995)"     
+ [3] "Braveheart (1995)"             "Johnny Mnemonic (1995)"       
+ [5] "Judge Dredd (1995)"            "Species (1995)"               
+ [7] "Santa Clause, The (1994)"      "Star Trek: Generations (1994)"
+ [9] "Flintstones, The (1994)"       "Demolition Man (1993)"        
+> recommendation_matrix <- sapply(predicted_recommendations@items,
++                                 function(x){ as.integer(colnames(movie_ratings)[x]) }) # matrix with the recommendations for each user
+> #dim(recc_matrix)
+> recommendation_matrix[,1:4]
+      [,1] [,2] [,3] [,4]
+ [1,]    2  553    5   50
+ [2,]   25 2006    7  104
+ [3,]  110 4022  163  111
+ [4,]  172  435  253  293
+ [5,]  173 5218  261  349
+ [6,]  196 2019  300  592
+ [7,]  317 2490  316  593
+ [8,]  329   11  339 1089
+ [9,]  355 1304  349 1221
+[10,]  442   62  380 1222
+
+
+> recommendation_matrix[,1:4]
+      [,1] [,2] [,3] [,4]
+ [1,]    2  553    5   50
+ [2,]   25 2006    7  104
+ [3,]  110 4022  163  111
+ [4,]  172  435  253  293
+ [5,]  173 5218  261  349
+ [6,]  196 2019  300  592
+ [7,]  317 2490  316  593
+ [8,]  329   11  339 1089
+ [9,]  355 1304  349 1221
+[10,]  442   62  380 1222
+> sum_colss <- colSums(recommendation_matrix > 0)
+> qplot(sum_colss, fill=I("steelblue"), col=I("red"))+ ggtitle("Distribution of the no. of items for IBCF")
